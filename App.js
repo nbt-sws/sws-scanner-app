@@ -482,14 +482,11 @@ function Scanner({ tcg, lang, onCapture, onBack }) {
       }
     }
     startCamera();
-    const videoEl = videoRef.current;
     return () => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      if (videoEl?.srcObject) {
-        videoEl.srcObject.getTracks().forEach(t => t.stop());
+      if (videoRef.current?.srcObject) {
+        videoRef.current.srcObject.getTracks().forEach(t => t.stop());
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function capture() {
@@ -619,7 +616,6 @@ function Extracting({ imageData, tcg, lang, onDone, onFail }) {
       }
     }
     extract();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const rows = [
@@ -1132,7 +1128,6 @@ function SwibsVault({ items, currency, setCurrency, fx, onBack, onOpen, onAdd })
 function VaultCardExpanded({ item, currency, fx, onClick }) {
   const isSold = !!item.sold;
   const pl = (item.sold || item.current) - item.paid;
-  // eslint-disable-next-line no-unused-vars
   const plPct = item.paid > 0 ? ((pl / item.paid) * 100).toFixed(1) : 0;
   const tags = [
     item.condition,
