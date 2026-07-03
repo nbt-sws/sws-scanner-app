@@ -1,0 +1,54 @@
+// src/screens/Scanner.js — RECOVERY STUB
+// ----------------------------------------------------------------
+// The original Scanner.js was corrupted during in-session edits (newlines
+// stripped, leading comment swallowed entire file). This minimal stub
+// gets the rest of the app loading so Vault / Settings / sign-in work
+// while the real Scanner is rewritten or restored from backup.
+//
+// To recover the full Scanner:
+//   1. Restore from OneDrive version history / Windows File History
+//   2. Or pull from a prior Vercel deployment (12:13 build was working)
+//   3. Or rewrite the Scanner flow from the V14-ONEPIECE-PROGRESS.md doc
+// ----------------------------------------------------------------
+
+import React from 'react';
+import { T, SZ } from '../theme';
+import { Button, Card, SectionLabel } from '../components';
+
+export default function Scanner() {
+  return (
+    <div style={{ padding: '20px 16px 100px', maxWidth: 540, margin: '0 auto' }}>
+      <h2
+        style={{
+          fontSize: SZ.xl,
+          fontWeight: 700,
+          margin: '8px 0 22px',
+          fontFamily: T.fontDisplay,
+          letterSpacing: '0.06em',
+        }}
+      >
+        SCAN A CARD
+      </h2>
+
+      <Card>
+        <SectionLabel>UNDER MAINTENANCE</SectionLabel>
+        <div style={{ fontSize: SZ.sm, color: T.textMid, marginTop: 12, lineHeight: 1.6 }}>
+          The Scanner is temporarily offline while we restore the original implementation.
+          All other features (SwibsVault, Settings, sign-in) still work normally.
+        </div>
+        <div style={{ marginTop: 16, fontSize: SZ.xs, color: T.textDim, fontFamily: T.fontMono }}>
+          recovery in progress — original Scanner.js corrupted during in-session edits.
+        </div>
+      </Card>
+
+      <div style={{ marginTop: 14, display: 'grid', gridTemplateColumns: '1fr', gap: 10 }}>
+        <Button variant="outline" disabled>
+          Take Photo (offline)
+        </Button>
+        <Button variant="outline" disabled>
+          Upload Image (offline)
+        </Button>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,44 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ---------- helpers ----------
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+    function under10MB() {
+      return request.resource.size < 10 * 1024 * 1024;
+    }
+
+    // ---------- per-user card photos ----------
+    // /cards/{uid}/{filename} — uploaded by the user, shown back in their vault
+    match /cards/{uid}/{filename} {
+      allow read:  if isOwner(uid);
+      allow write: if isOwner(uid) && isImage() && under10MB();
+    }
+
+    // ---------- shared scan cache thumbnails ----------
+    // Server writes small thumbnails so a cache hit can show a preview
+    // without re-fetching the original full-res image.
+    match /scans/{hash} {
+      allow read:  if isSignedIn();
+      allow write: if false; // server-side (Admin SDK) only
+    }
+
+    // ---------- verified_cards SAMPLE images (community DB) ----------
+    // Mirrored official card images at verified_cards/{code}__{rarity}.{ext}.
+    // Public read — these are SAMPLE images displayed in the Scanner UI and
+    // are non-sensitive marketing assets from the card game manufacturer.
+    // Server (Admin SDK via /api/contribute) is the only writer.
+    match /verified_cards/{filename} {
+      allow read:  if true;
+      allow write: if false;
+    }
+  }
+}

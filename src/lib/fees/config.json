@@ -1,0 +1,5 @@
+{
+  "_deprecated": true,
+  "_replacedBy": "./config.js",
+  "_note": "This file is no longer imported anywhere. The NBT_Rate_3 config now lives in config.js as a JS module so Vercel's serverless bundler and CRA's webpack both pick it up reliably without import-attributes."
+}

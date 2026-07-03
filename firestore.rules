@@ -1,0 +1,93 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- helpers ----------
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // ---------- users ----------
+    // Each user owns their profile doc at /users/{uid}.
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid)
+                    && !('subscriptionTier' in request.resource.data.diff(resource.data).affectedKeys());
+      allow delete: if false;
+    }
+
+    // ---------- vault items ----------
+    // /vault/{itemId} with userId field.
+    match /vault/{itemId} {
+      allow read:   if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // ---------- scans cache ----------
+    // /scans/{hash} — keyed by image content hash. Shared cache across users
+    // for the AI-extracted card details (saves Haiku calls). Each scan
+    // records the uploader's userId but reads are open to any signed-in user
+    // (the cache is a hit detector, not private content).
+    match /scans/{hash} {
+      allow read:   if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if false; // immutable once written
+      allow delete: if false; // server-side cleanup only
+    }
+
+    // ---------- subscriptions ----------
+    // Server writes only — clients read their own.
+    match /subscriptions/{uid} {
+      allow read:   if isOwner(uid);
+      allow write:  if false;
+    }
+
+    // ---------- verified_cards (community database) ----------
+    // Canonical card records contributed by users (code + rarity → official
+    // SAMPLE image + metadata). Server (Admin SDK via /api/contribute) is
+    // the only writer; any signed-in user can read so the Scanner UI can
+    // show the verified hero image.
+    match /verified_cards/{docKey} {
+      allow read:  if isSignedIn();
+      allow write: if false;
+
+      // Contribution history (used for visual-learning pHash lookup).
+      match /contributions/{contribId} {
+        allow read:  if isSignedIn();
+        allow write: if false;
+      }
+    }
+
+    // ---------- transactions (SwibSwap market activity) ----------
+    // Records each in-app purchase / sale event. Reads are open to signed-in
+    // users so the Market graph works for everyone; writes happen via the
+    // /api/transactions endpoint (server-side Admin SDK).
+    match /transactions/{txId} {
+      allow read:  if isSignedIn();
+      allow write: if false;
+    }
+
+    // ---------- auctions (B1, B2) ----------
+    // Auction docs are readable by any signed-in user (browse / detail).
+    // Writes happen ONLY via the /api/auctions endpoint (Admin SDK) — the
+    // endpoint enforces seller-only edits, atomic bid placement, KYC checks,
+    // and the cron-driven close at endsAt. Direct client writes blocked so
+    // a malicious user can't tamper with the bid history.
+    match /auctions/{auctionId} {
+      allow read:  if isSignedIn();
+      allow write: if false;
+
+      // Bid history subcollection — same model.
+      match /bids/{bidId} {
+        allow read:  if isSignedIn();
+        allow write: if false;
+      }
+    }
+  }
+}

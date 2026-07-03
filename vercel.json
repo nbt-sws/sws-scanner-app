@@ -1,0 +1,26 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "react-scripts build",
+  "outputDirectory": "build",
+  "framework": "create-react-app",
+  "functions": {
+    "api/*.js": {
+      "memory": 1024,
+      "maxDuration": 60,
+      "includeFiles": "logos/**"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/auctions?action=tick",
+      "schedule": "* * * * *"
+    }
+  ],
+  "installCommand": "npm install --include=optional --os=linux --cpu=x64"
+}
