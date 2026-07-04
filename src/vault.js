@@ -3,6 +3,7 @@
 // Each doc has a userId field; security rules enforce ownership.
 // Components consume via the useVault() hook which subscribes to live updates.
 
+import { apiUrl } from './api';
 import { useEffect, useState } from 'react';
 import {
   collection,
@@ -145,7 +146,7 @@ export async function logSale({ code, rarity, lang, tcg, amount, currency, getId
     const token = getIdToken ? await getIdToken() : null;
     const headers = { 'Content-Type': 'application/json' };
     if (token) headers.Authorization = `Bearer ${token}`;
-    await fetch('/api/transactions', {
+    await fetch(apiUrl('/transactions'), {
       method: 'POST',
       headers,
       body: JSON.stringify({ code, rarity, lang, tcg, kind: 'sale', amount: Number(amount), currency: currency || 'THB' }),

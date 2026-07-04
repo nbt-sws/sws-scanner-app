@@ -6,6 +6,7 @@
 // Lets the user search a code+rarity to view its in-app transaction history.
 
 import React, { useEffect, useState } from 'react';
+import { apiUrl } from '../api';
 import { T, SZ, CURRENCIES, fmtMoney } from '../theme';
 import { Pill, Spinner, ErrorBanner } from '../components';
 
@@ -29,7 +30,7 @@ export default function Market({ user, currency, fx }) {
     setError(null);
     setData(null);
     try {
-      const r = await fetch(`/api/transactions?code=${encodeURIComponent(code)}&rarity=${encodeURIComponent(rarity)}`);
+      const r = await fetch(apiUrl(`/transactions?code=${encodeURIComponent(code)}&rarity=${encodeURIComponent(rarity)}`));
       const d = await r.json();
       if (!r.ok || !d.ok) throw new Error(d.error || `HTTP ${r.status}`);
       setData(d);

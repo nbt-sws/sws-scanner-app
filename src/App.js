@@ -2,6 +2,7 @@
 // Routes between SignIn / Scanner / Vault / Settings based on auth state.
 // FX rates fetched at boot from Frankfurter (free, no auth).
 
+import { apiUrl } from './api';
 import React, { useEffect, useState } from 'react';
 import { T, SZ, DEFAULT_FX } from './theme';
 import { Screen, Spinner } from './components';
@@ -49,7 +50,7 @@ export default function App() {
 
   // FX rates on boot — via our /api/fx proxy (Frankfurter blocks browser CORS).
   useEffect(() => {
-    fetch('/api/fx')
+    fetch(apiUrl('/fx'))
       .then((r) => r.json())
       .then((data) => {
         if (data && data.rates) setFx({ THB: 1, ...data.rates });
