@@ -1,0 +1,15 @@
+{
+  "short_name": "SwibSwap",
+  "name": "SwibSwap · Trusted Collectibles Trading",
+  "description": "Scan, grade, and price your One Piece and Yu-Gi-Oh! card collection.",
+  "icons": [
+    { "src": "favicon.ico", "sizes": "16x16 32x32 48x48 64x64", "type": "image/x-icon" },
+    { "src": "logo192.png", "type": "image/png", "sizes": "192x192", "purpose": "any maskable" },
+    { "src": "logo512.png", "type": "image/png", "sizes": "512x512", "purpose": "any maskable" }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0A0F2E",
+  "background_color": "#0A0F2E"
+}
