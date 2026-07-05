@@ -4,7 +4,7 @@
 //   Google Lens link → Score quality → watermarked corners → Save to vault.
 // Edit panel uses dropdowns for rarity + language sourced from skill modules.
 
-import { apiUrl } from '../api';
+import { apiUrl, getMockAuthHeaders } from '../api';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { T, SZ, fmtMoney, CURRENCIES } from '../theme';
 import { Button, Pill, Spinner, ErrorBanner, Card, LoadingCard, SectionLabel } from '../components';
@@ -214,7 +214,7 @@ function detectCardBounds(ctx, W, H) {
 
 
 async function postJson(path, body, idToken) {
-  const headers = { 'Content-Type': 'application/json' };
+  const headers = { 'Content-Type': 'application/json', ...getMockAuthHeaders() };
   if (idToken) headers.Authorization = `Bearer ${idToken}`;
   const res = await fetch(apiUrl(path), { method: 'POST', headers, body: JSON.stringify(body) });
   const contentType = res.headers.get('content-type') || '';
@@ -231,7 +231,7 @@ async function postJson(path, body, idToken) {
 }
 
 async function getJson(path) {
-  const res = await fetch(apiUrl(path));
+  const res = await fetch(apiUrl(path), { headers: { ...getMockAuthHeaders() } });
   const data = await res.json().catch(() => ({ ok: false, error: 'Bad JSON' }));
   if (!res.ok || !data.ok) throw new Error(data.error || `HTTP ${res.status}`);
   return data;
@@ -633,7 +633,7 @@ export default function Scanner({ user, getIdToken, currency, currency2, fx }) {
         if (!user?.uid) { setIsAdmin(false); return; }
         const token = await getIdToken();
         if (!token) return;
-        const r = await fetch(apiUrl('/whoami'), { headers: { Authorization: 'Bearer ' + token } });
+        const r = await fetch(apiUrl('/whoami'), { headers: { Authorization: 'Bearer ' + token, ...getMockAuthHeaders() } });
         const d = await r.json();
         if (!cancelled) setIsAdmin(!!d?.isAdmin);
       } catch { /* non-fatal */ }
@@ -1118,8 +1118,8 @@ export default function Scanner({ user, getIdToken, currency, currency2, fx }) {
 
       {scan?.card && user?.uid && (
         <div style={{ marginTop: 20 }}>
-          <Button onClick={askPriceThenVault} disabled={busy !== null} size="lg">
-            {busy === 'save' ? <Spinner size={16} color={T.bgDeep} /> : 'Save to SwibsVault'}
+          <Button onClick={askPriceThenVault} disabled={true} size="lg" title="Vault save temporarily disabled">
+            Save to SwibsVault (coming soon)
           </Button>
         </div>
       )}
