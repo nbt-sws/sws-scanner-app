@@ -4,6 +4,7 @@
 //   Google Lens link → Score quality → watermarked corners → Save to vault.
 // Edit panel uses dropdowns for rarity + language sourced from skill modules.
 
+import { apiUrl, getMockAuthHeaders } from '../api';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { T, SZ, fmtMoney, CURRENCIES } from '../theme';
 import { Button, Pill, Spinner, ErrorBanner, Card, LoadingCard, SectionLabel } from '../components';
@@ -105,7 +106,7 @@ async function watermarkImage(dataUrl, opts = {}) {
 async function watermarkRemoteUrl(url, opts = {}) {
   if (!url) return null;
   try {
-    const proxied = url.startsWith('/') ? url : `/api/proxy-image?url=${encodeURIComponent(url)}`;
+    const proxied = url.startsWith('/') ? url : apiUrl(`/proxy-image?url=${encodeURIComponent(url)}`);
     const r = await fetch(proxied);
     if (!r.ok) throw new Error('fetch ' + r.status);
     const blob = await r.blob();
@@ -213,9 +214,9 @@ function detectCardBounds(ctx, W, H) {
 
 
 async function postJson(path, body, idToken) {
-  const headers = { 'Content-Type': 'application/json' };
+  const headers = { 'Content-Type': 'application/json', ...getMockAuthHeaders() };
   if (idToken) headers.Authorization = `Bearer ${idToken}`;
-  const res = await fetch(path, { method: 'POST', headers, body: JSON.stringify(body) });
+  const res = await fetch(apiUrl(path), { method: 'POST', headers, body: JSON.stringify(body) });
   const contentType = res.headers.get('content-type') || '';
   if (!contentType.includes('application/json')) {
     const peek = (await res.text()).slice(0, 120).replace(/\s+/g, ' ');
@@ -230,7 +231,7 @@ async function postJson(path, body, idToken) {
 }
 
 async function getJson(path) {
-  const res = await fetch(path);
+  const res = await fetch(apiUrl(path), { headers: { ...getMockAuthHeaders() } });
   const data = await res.json().catch(() => ({ ok: false, error: 'Bad JSON' }));
   if (!res.ok || !data.ok) throw new Error(data.error || `HTTP ${res.status}`);
   return data;
@@ -385,7 +386,7 @@ export default function Scanner({ user, getIdToken, currency, currency2, fx }) {
     setError(null);
     try {
       const token = await getIdToken();
-      const result = await postJson('/api/scan', { image: imageDataUrl, tcg, lang, force }, token);
+      const result = await postJson('/scan', { image: imageDataUrl, tcg, lang, force }, token);
       setScan(result);
       setEdits(null);
       setEditing(false);
@@ -428,7 +429,7 @@ export default function Scanner({ user, getIdToken, currency, currency2, fx }) {
       qs.set('code', code);
       qs.set('lang', langOverride || lang);
       if (scan?.card?.nameEn) qs.set('name', scan.card.nameEn);
-      const data = await getJson(`/api/op-variants?${qs.toString()}`);
+      const data = await getJson(`/op-variants?${qs.toString()}`);
       setVariants(data.variants || []);
       if (data.cardpieceTried) {
         // eslint-disable-next-line no-console
@@ -491,7 +492,7 @@ export default function Scanner({ user, getIdToken, currency, currency2, fx }) {
         opDetails?.imageUrl ||
         null;
       if (sampleUrl) qs.set('sampleImageUrl', sampleUrl);
-      getJson(`/api/prices?${qs.toString()}`)
+      getJson(`/prices?${qs.toString()}`)
         .then((data) => setPricing(data))
         .catch(() => setPricing(null))
         .finally(() => setBgLoading((b) => ({ ...b, pricing: false })));
@@ -505,7 +506,7 @@ export default function Scanner({ user, getIdToken, currency, currency2, fx }) {
       qs.set('code', card.code);
       qs.set('lang', lang);
       if (card.rarity) qs.set('rarity', card.rarity);
-      getJson(`/api/op-details?${qs.toString()}`)
+      getJson(`/op-details?${qs.toString()}`)
         .then((data) => setOpDetails(data?.details || null))
         .catch(() => setOpDetails(null))
         .finally(() => setBgLoading((b) => ({ ...b, details: false })));
@@ -542,7 +543,7 @@ export default function Scanner({ user, getIdToken, currency, currency2, fx }) {
       const __watermarked = variantSampleUrl
         ? await watermarkRemoteUrl(variantSampleUrl)
         : null;
-      const result = await postJson('/api/contribute', {
+      const result = await postJson('/contribute', {
         card: finalCard, tcg, lang,
         image: __watermarked,
         sampleImageUrl: variantSampleUrl,
@@ -592,7 +593,7 @@ export default function Scanner({ user, getIdToken, currency, currency2, fx }) {
       // no deskew — those were producing wrong outputs). Just add the
       // SAMPLE_WTM.png watermark and store.
       const __watermarked = await watermarkImage(imageDataUrl);
-      const result = await postJson('/api/contribute-sample', {
+      const result = await postJson('/contribute-sample', {
         image: __watermarked,
         code:   finalCard.code,
         rarity: finalCard.rarity,
@@ -632,7 +633,7 @@ export default function Scanner({ user, getIdToken, currency, currency2, fx }) {
         if (!user?.uid) { setIsAdmin(false); return; }
         const token = await getIdToken();
         if (!token) return;
-        const r = await fetch('/api/whoami', { headers: { Authorization: 'Bearer ' + token } });
+        const r = await fetch(apiUrl('/whoami'), { headers: { Authorization: 'Bearer ' + token, ...getMockAuthHeaders() } });
         const d = await r.json();
         if (!cancelled) setIsAdmin(!!d?.isAdmin);
       } catch { /* non-fatal */ }
@@ -653,7 +654,7 @@ export default function Scanner({ user, getIdToken, currency, currency2, fx }) {
       if (!token) throw new Error('Sign-in required');
       // SCN92 — shrink image to dodge Vercel's 4.5MB body cap.
       const __watermarked = await watermarkImage(imageDataUrl);
-      const result = await postJson('/api/contribute-sample', {
+      const result = await postJson('/contribute-sample', {
         image: __watermarked,
         code:   finalCard.code,
         rarity: finalCard.rarity,
@@ -706,7 +707,7 @@ export default function Scanner({ user, getIdToken, currency, currency2, fx }) {
     setError(null);
     try {
       const token = await getIdToken();
-      const result = await postJson('/api/quality', { image: imageDataUrl, tcg }, token);
+      const result = await postJson('/quality', { image: imageDataUrl, tcg }, token);
       setQuality(result);
     } catch (err) {
       setError('Quality scoring failed: ' + err.message);
@@ -728,7 +729,7 @@ export default function Scanner({ user, getIdToken, currency, currency2, fx }) {
     (async () => {
       setBgLoading((b) => ({ ...b, watermark: true }));
       try {
-        const data = await postJson('/api/watermark', {
+        const data = await postJson('/watermark', {
           image: imageDataUrl,
           mode: 'preview',           // no overlay — clean exposure-enhanced crops
         });
@@ -792,7 +793,7 @@ export default function Scanner({ user, getIdToken, currency, currency2, fx }) {
       if (paid > 0 && finalCard?.code && finalCard?.rarity) {
         try {
           const token = await getIdToken();
-          await postJson('/api/transactions', {
+          await postJson('/transactions', {
             code: finalCard.code, rarity: finalCard.rarity, lang, tcg,
             kind: 'purchase', amount: paid, currency: paidCurrency,
           }, token);
@@ -808,7 +809,7 @@ export default function Scanner({ user, getIdToken, currency, currency2, fx }) {
       // future audits / dispute resolution use this as proof.
       let vaultPhotoUrl = photoUrl;
       try {
-        const stamped = await postJson('/api/watermark', {
+        const stamped = await postJson('/watermark', {
           image: imageDataUrl,
           userId: user?.displayName || user?.email || user?.uid || 'guest',
           date: pDate || new Date().toISOString().slice(0, 10),
@@ -1117,8 +1118,8 @@ export default function Scanner({ user, getIdToken, currency, currency2, fx }) {
 
       {scan?.card && user?.uid && (
         <div style={{ marginTop: 20 }}>
-          <Button onClick={askPriceThenVault} disabled={busy !== null} size="lg">
-            {busy === 'save' ? <Spinner size={16} color={T.bgDeep} /> : 'Save to SwibsVault'}
+          <Button onClick={askPriceThenVault} disabled={true} size="lg" title="Vault save temporarily disabled">
+            Save to SwibsVault (coming soon)
           </Button>
         </div>
       )}

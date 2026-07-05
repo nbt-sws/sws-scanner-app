@@ -1,5 +1,6 @@
 // src/screens/scanner/VariantPicker.js — SCN86 extracted from Scanner.js
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { apiUrl } from '../../api';
 import { T, SZ, CURRENCIES, fmtMoney } from '../../theme';
 import { Card, Pill, Button, Spinner, LoadingCard, SectionLabel } from '../../components';
 import { OP_RARITIES } from '../../rarities';
@@ -103,7 +104,7 @@ export default function VariantPicker({ loading, variants, onPick, currentRarity
             onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
           >
             <img
-              src={`/api/proxy-image?url=${encodeURIComponent(v.imageUrl)}`}
+              src={apiUrl(`/proxy-image?url=${encodeURIComponent(v.imageUrl)}`)}
               alt={v.rarity || 'variant'}
               loading="lazy"
               style={{

@@ -8,6 +8,7 @@ import {
   signUpEmail,
   signInWithGoogle,
   signInWithApple,
+  isBypassCredentials,
 } from '../auth';
 import { firebaseEnabled } from '../firebase';
 import Logo from '../Logo';
@@ -19,6 +20,8 @@ export default function SignIn({ onSignedIn }) {
   const [displayName, setDisplayName] = useState('');
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
+
+  const isBypass = mode === 'signin' && isBypassCredentials(email, password);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -77,9 +80,14 @@ export default function SignIn({ onSignedIn }) {
 
         <ErrorBanner message={error} />
 
-        {!firebaseEnabled && (
+        {!firebaseEnabled && !isBypass && (
           <div style={{ fontSize: SZ.sm, color: T.amber, marginBottom: 14, textAlign: 'center' }}>
             Running in offline mode — Firebase keys not set. Sign-in is disabled.
+          </div>
+        )}
+        {isBypass && (
+          <div style={{ fontSize: SZ.sm, color: T.cyan, marginBottom: 14, textAlign: 'center' }}>
+            Bypass credentials detected — sign in without Firebase.
           </div>
         )}
 
@@ -113,7 +121,7 @@ export default function SignIn({ onSignedIn }) {
             required
             minLength={6}
           />
-          <Button type="submit" disabled={busy || !firebaseEnabled}>
+          <Button type="submit" disabled={busy || (!firebaseEnabled && !isBypass)}>
             {busy ? 'Working…' : mode === 'signin' ? 'Sign in' : 'Sign up'}
           </Button>
         </form>

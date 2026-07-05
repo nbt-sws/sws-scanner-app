@@ -1,5 +1,6 @@
 // src/screens/scanner/EditPanel.js — SCN86 extracted from Scanner.js
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { apiUrl } from '../../api';
 import { T, SZ, CURRENCIES, fmtMoney } from '../../theme';
 import { Card, Pill, Button, Spinner, LoadingCard, SectionLabel } from '../../components';
 import { OP_RARITIES, YGO_RARITIES } from '../../rarities';
@@ -43,7 +44,7 @@ export default function EditPanel({ tcg, card, onCancel, onSave }) {
     if (!/^[A-Z]+-?\d/i.test(code)) return;   // skip until format looks valid
     let cancelled = false;
     const t = setTimeout(() => {
-      fetch(`/api/op-details?code=${encodeURIComponent(code)}`)
+      fetch(apiUrl(`/op-details?code=${encodeURIComponent(code)}`))
         .then((r) => r.json())
         .then((data) => {
           if (cancelled) return;
@@ -88,7 +89,7 @@ export default function EditPanel({ tcg, card, onCancel, onSave }) {
   const [knownRarities, setKnownRarities] = useState([]);
   useEffect(() => {
     if (!code) { setKnownRarities([]); return; }
-    fetch(`/api/op-variants?lightweight=1&code=${encodeURIComponent(code)}`)
+    fetch(apiUrl(`/op-variants?lightweight=1&code=${encodeURIComponent(code)}`))
       .then((r) => r.json())
       .then((data) => setKnownRarities(Array.isArray(data?.rarities) ? data.rarities : []))
       .catch(() => setKnownRarities([]));

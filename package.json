@@ -2,6 +2,7 @@
   "name": "boboa-scanner",
   "version": "13.0.0",
   "private": true,
+  "proxy": "http://localhost:8088",
   "description": "SwibSwap / BoBoa Scanner v13 \u2014 TCG card scanner with cache, photo storage, and quality scoring",
   "author": "I1NOV",
   "scripts": {

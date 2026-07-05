@@ -7,6 +7,7 @@
 //   - Add / move / delete items, mark sold, edit purchase price + date.
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { apiUrl } from '../api';
 import { T, SZ, fmtMoney } from '../theme';
 import { Pill, Spinner, Button } from '../components';
 import { useVault, deleteVaultItem, markSold, updateVaultItem, logSale } from '../vault';
@@ -404,7 +405,7 @@ function VaultRow({ item, currency, fx, folders, getIdToken, tier = 'user' }) {
     }}>
       {item.photoUrl || item.opDetailsImageUrl ? (
         <img
-          src={item.photoUrl || `/api/proxy-image?url=${encodeURIComponent(item.opDetailsImageUrl)}`}
+          src={item.photoUrl || apiUrl(`/proxy-image?url=${encodeURIComponent(item.opDetailsImageUrl)}`)}
           alt=""
           style={{ width: 44, height: 60, objectFit: 'cover', borderRadius: 6 }}
         />

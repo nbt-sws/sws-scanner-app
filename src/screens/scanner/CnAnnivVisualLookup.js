@@ -1,4 +1,5 @@
 // src/screens/scanner/CnAnnivVisualLookup.js — SCN85 extracted from Scanner.js
+import { apiUrl } from '../../api';
 import React, { useState, useEffect, useMemo } from 'react';
 import { T, SZ } from '../../theme';
 import { Card, Pill, LoadingCard, SectionLabel } from '../../components';
@@ -24,14 +25,14 @@ export default function CnAnnivVisualLookup({ card, imageDataUrl, onPick }) {
       let narrowed = null;
       if (!showAll && annivHint) {
         try {
-          const r = await fetch('/api/cn-anniv-cards?anniv=' + encodeURIComponent(annivHint) + '&verified=true');
+          const r = await fetch(apiUrl('/cn-anniv-cards?anniv=' + encodeURIComponent(annivHint) + '&verified=true'));
           const d = await r.json();
           if (d?.items?.length > 0) narrowed = d.items;
         } catch { /* fall through */ }
       }
       if (!narrowed) {
         try {
-          const r = await fetch('/api/cn-anniv-cards?verified=true');
+          const r = await fetch(apiUrl('/cn-anniv-cards?verified=true'));
           const d = await r.json();
           narrowed = d?.items || [];
         } catch { narrowed = []; }
@@ -43,7 +44,7 @@ export default function CnAnnivVisualLookup({ card, imageDataUrl, onPick }) {
       if (imageDataUrl && narrowed.length > 0) {
         setVisionLoading(true);
         try {
-          const r = await fetch('/api/visual-match', {
+          const r = await fetch(apiUrl('/visual-match'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

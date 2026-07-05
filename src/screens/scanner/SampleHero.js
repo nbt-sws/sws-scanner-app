@@ -1,5 +1,6 @@
 // src/screens/scanner/SampleHero.js — SCN86 extracted from Scanner.js
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { apiUrl } from '../../api';
 import { T, SZ, CURRENCIES, fmtMoney } from '../../theme';
 import { Card, Pill, Button, Spinner, LoadingCard, SectionLabel } from '../../components';
 import { OP_RARITIES } from '../../rarities';
@@ -62,7 +63,7 @@ export default function SampleHero({
               const buster = `&v=${encodeURIComponent(bustVal)}`;
               const raw = sampleSrc.startsWith('/')
                 ? `${sampleSrc}${sampleSrc.includes('?') ? '&' : '?'}v=${encodeURIComponent(bustVal)}`
-                : `/api/proxy-image?url=${encodeURIComponent(sampleSrc)}${buster}`;
+                : apiUrl(`/proxy-image?url=${encodeURIComponent(sampleSrc)}${buster}`);
               return raw;
             })()}
             alt={officialName || 'sample card'}

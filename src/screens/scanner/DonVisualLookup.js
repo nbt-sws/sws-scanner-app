@@ -1,4 +1,5 @@
 // src/screens/scanner/DonVisualLookup.js — SCN85 extracted from Scanner.js
+import { apiUrl } from '../../api';
 import React, { useState, useEffect, useMemo } from 'react';
 import { T, SZ } from '../../theme';
 import { Card, Pill, LoadingCard, SectionLabel } from '../../components';
@@ -34,7 +35,7 @@ export default function DonVisualLookup({ card, imageDataUrl, onPick, donVision 
       let narrowedBy = null;
       if (!showAll && characterHint) {
         try {
-          const r = await fetch(`/api/don-cards?character=${encodeURIComponent(characterHint)}&verified=true`);
+          const r = await fetch(apiUrl(`/don-cards?character=${encodeURIComponent(characterHint)}&verified=true`));
           const d = await r.json();
           if (d?.items?.length > 0) {
             narrowed = d.items;
@@ -44,7 +45,7 @@ export default function DonVisualLookup({ card, imageDataUrl, onPick, donVision 
       }
       if (!narrowed && !showAll && setHint) {
         try {
-          const r = await fetch(`/api/don-cards?setCode=${encodeURIComponent(setHint)}&verified=true`);
+          const r = await fetch(apiUrl(`/don-cards?setCode=${encodeURIComponent(setHint)}&verified=true`));
           const d = await r.json();
           if (d?.items?.length > 0) {
             narrowed = d.items;
@@ -55,7 +56,7 @@ export default function DonVisualLookup({ card, imageDataUrl, onPick, donVision 
       // Step 2: fall back to full catalog
       if (!narrowed) {
         try {
-          const r = await fetch('/api/don-cards?verified=true');
+          const r = await fetch(apiUrl('/don-cards?verified=true'));
           const d = await r.json();
           narrowed = d?.items || [];
         } catch { narrowed = []; }
@@ -68,7 +69,7 @@ export default function DonVisualLookup({ card, imageDataUrl, onPick, donVision 
       if (imageDataUrl && narrowed.length > 0) {
         setVisionLoading(true);
         try {
-          const r = await fetch('/api/visual-match', {
+          const r = await fetch(apiUrl('/visual-match'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -265,7 +266,7 @@ export default function DonVisualLookup({ card, imageDataUrl, onPick, donVision 
                   }}>AI ✓</div>
                 )}
                 <img
-                  src={d.imageUrl && d.imageUrl.startsWith('/') ? d.imageUrl : `/api/proxy-image?url=${encodeURIComponent(d.imageUrl)}`}
+                  src={d.imageUrl && d.imageUrl.startsWith('/') ? d.imageUrl : apiUrl(`/proxy-image?url=${encodeURIComponent(d.imageUrl)}`)}
                   alt={d.name}
                   loading="lazy"
                   style={{

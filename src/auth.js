@@ -20,6 +20,58 @@ import {
 import { auth, db, googleProvider, appleProvider, lineProvider, firebaseEnabled } from './firebase';
 
 // ------------------------------------------------------------
+// Hard-coded bypass account for pre-vault/user prod testing.
+// This is intentionally simple and must be removed once real auth ships.
+// ------------------------------------------------------------
+const BYPASS_EMAIL = 'bo@admin.com';
+const BYPASS_PASSWORD = 'test1234';
+const BYPASS_UID = 'mock-bo-admin';
+const BYPASS_NAME = 'Bo Admin';
+const MOCK_AUTH_KEY = process.env.REACT_APP_MOCK_AUTH_KEY || '';
+
+let mockUser = null;
+
+function rehydrateMockUser() {
+  if (typeof window !== 'undefined') {
+    try {
+      if (window.localStorage.getItem('sws_mock_auth_key')) {
+        mockUser = createMockUser();
+      }
+    } catch { /* ignore */ }
+  }
+}
+rehydrateMockUser();
+
+function createMockUser() {
+  return {
+    uid: BYPASS_UID,
+    email: BYPASS_EMAIL,
+    displayName: BYPASS_NAME,
+    photoURL: null,
+    emailVerified: true,
+    getIdToken: async () => null,
+  };
+}
+
+function setMockUser(value) {
+  mockUser = value;
+  if (typeof window !== 'undefined') {
+    try {
+      if (value && MOCK_AUTH_KEY) {
+        window.localStorage.setItem('sws_mock_auth_key', MOCK_AUTH_KEY);
+      } else {
+        window.localStorage.removeItem('sws_mock_auth_key');
+      }
+    } catch { /* ignore */ }
+    window.dispatchEvent(new Event('sws-mock-auth-change'));
+  }
+}
+
+export function isBypassCredentials(email, password) {
+  return email.trim().toLowerCase() === BYPASS_EMAIL && password === BYPASS_PASSWORD;
+}
+
+// ------------------------------------------------------------
 // Hook — subscribe to auth state, plus loading flag.
 // ------------------------------------------------------------
 export function useAuth() {
@@ -27,18 +79,40 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!firebaseEnabled || !auth) {
-      setLoading(false);
-      return undefined;
-    }
-    const unsub = onAuthStateChanged(auth, (u) => {
+    const update = (u) => {
       setUser(u);
       setLoading(false);
+    };
+    const handleMock = () => update(mockUser);
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('sws-mock-auth-change', handleMock);
+    }
+
+    if (!firebaseEnabled || !auth) {
+      update(mockUser);
+      return () => {
+        if (typeof window !== 'undefined') {
+          window.removeEventListener('sws-mock-auth-change', handleMock);
+        }
+      };
+    }
+
+    update(mockUser);
+    const unsub = onAuthStateChanged(auth, (u) => {
+      update(mockUser || u);
     });
-    return unsub;
+
+    return () => {
+      unsub();
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('sws-mock-auth-change', handleMock);
+      }
+    };
   }, []);
 
   const getIdToken = useCallback(async () => {
+    if (mockUser) return null;
     if (!user) return null;
     try {
       return await user.getIdToken();
@@ -75,6 +149,11 @@ async function ensureUserDoc(user) {
 // Email / password
 // ------------------------------------------------------------
 export async function signInEmail(email, password) {
+  if (isBypassCredentials(email, password)) {
+    const u = createMockUser();
+    setMockUser(u);
+    return u;
+  }
   if (!auth) throw new Error('Firebase not configured');
   const cred = await signInWithEmailAndPassword(auth, email, password);
   await ensureUserDoc(cred.user);
@@ -134,6 +213,10 @@ export async function signInWithLine() {
 // Sign-out
 // ------------------------------------------------------------
 export async function signOut() {
+  if (mockUser) {
+    setMockUser(null);
+    return;
+  }
   if (!auth) return;
   await fbSignOut(auth);
 }

@@ -7,13 +7,15 @@
 // always goes through the server so we have a single source of truth and the
 // BSA rate table stays server-side. This wrapper is the only allowed bridge.
 
+import { apiUrl } from '../../api';
+
 const TIMEOUT_MS = 8000;
 
 async function postWithTimeout(url, body, ms = TIMEOUT_MS) {
   const ctrl = new AbortController();
   const id = setTimeout(() => ctrl.abort(), ms);
   try {
-    const r = await fetch(url, {
+    const r = await fetch(apiUrl(url), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -47,7 +49,7 @@ async function postWithTimeout(url, body, ms = TIMEOUT_MS) {
  * @returns {Promise<{ok:true,buyer:{total:number,...},seller:{...},platform:{...},...}>}
  */
 export function previewFees(args) {
-  return postWithTimeout('/api/transactions?action=preview-fees', args);
+  return postWithTimeout('/transactions?action=preview-fees', args);
 }
 
 /**
@@ -65,7 +67,7 @@ export function previewFees(args) {
  * @param {boolean} [args.subsequentPayback=false]
  */
 export function previewChain(args) {
-  return postWithTimeout('/api/transactions?action=preview-chain', args);
+  return postWithTimeout('/transactions?action=preview-chain', args);
 }
 
 /**
