@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "react-scripts build",
+  "buildCommand": "chmod +x node_modules/.bin/react-scripts && react-scripts build",
   "outputDirectory": "build",
   "framework": "create-react-app",
   "functions": {
