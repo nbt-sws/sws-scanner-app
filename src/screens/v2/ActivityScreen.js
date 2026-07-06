@@ -12,7 +12,7 @@ export default function ActivityScreen() {
   return (
     <div className="flex flex-col min-h-full px-4 pt-16 pb-24 max-w-md mx-auto">
       <div className="flex items-center justify-between mb-5">
-        <div className="font-display text-headline-lg-mobile text-on-surface">Activity</div>
+        <div className="font-display text-2xl text-on-surface">Activity</div>
         <button className="font-mono text-label-caps text-primary tracking-widest">VIEW ALL</button>
       </div>
 

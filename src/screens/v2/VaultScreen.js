@@ -78,7 +78,7 @@ export default function VaultScreen({ user, getToken }) {
           <div className="font-mono text-label-caps tracking-widest opacity-80 mb-1">
             TOTAL VAULT VALUE
           </div>
-          <div className="font-display text-headline-xl">{fmtMoney(totals.vaultValue)}</div>
+          <div className="font-display text-3xl sm:text-4xl">{fmtMoney(totals.vaultValue)}</div>
           <div className="inline-flex items-center gap-1 mt-2 px-3 py-1 rounded-full bg-white/20 font-mono text-label-caps">
             <Icon name="trending_up" size={14} />
             +4.2% (24h)
@@ -92,7 +92,7 @@ export default function VaultScreen({ user, getToken }) {
           <div className="font-mono text-label-caps text-on-surface-variant tracking-widest mb-2">
             UNREALIZED P/L
           </div>
-          <div className="font-display text-headline-lg-mobile text-on-surface">
+          <div className="font-display text-xl sm:text-2xl text-on-surface">
             {fmtMoney(totals.unrealized)}
           </div>
           <svg viewBox="0 0 100 24" className="w-full h-8 mt-2 text-primary" preserveAspectRatio="none">
@@ -108,7 +108,7 @@ export default function VaultScreen({ user, getToken }) {
           <div className="font-mono text-label-caps text-on-surface-variant tracking-widest mb-2">
             REALIZED P/L
           </div>
-          <div className="font-display text-headline-lg-mobile text-on-surface">
+          <div className="font-display text-xl sm:text-2xl text-on-surface">
             {fmtMoney(totals.realized)}
           </div>
           <svg viewBox="0 0 100 24" className="w-full h-8 mt-2 text-secondary" preserveAspectRatio="none">
@@ -135,7 +135,7 @@ export default function VaultScreen({ user, getToken }) {
       {filtered.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center text-center text-on-surface-variant py-12">
           <Icon name="inventory_2" size={48} className="mb-3 opacity-40" />
-          <div className="font-display text-headline-lg-mobile text-on-surface mb-1">
+          <div className="font-display text-xl text-on-surface mb-1">
             Vault is empty
           </div>
           <div className="text-body-sm">Scan your first card to get started.</div>

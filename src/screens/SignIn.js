@@ -64,7 +64,7 @@ export default function SignIn({ onSignedIn }) {
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-midnight-rose flex items-center justify-center mb-4 shadow-[0_8px_30px_-10px_rgba(255,178,191,0.4)]">
             <Icon name="layers" size={32} filled className="text-on-primary" />
           </div>
-          <h1 className="font-display text-headline-lg text-on-surface mb-1">SwibScan</h1>
+          <h1 className="font-display text-3xl text-on-surface mb-1">SwibScan</h1>
           <p className="text-body-sm text-on-surface-variant">
             {mode === 'signin' ? 'Welcome back, collector.' : 'Create your collector account.'}
           </p>

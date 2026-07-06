@@ -28,7 +28,7 @@ export default function ProfileScreen({ user }) {
             <Icon name="edit" size={14} />
           </button>
         </div>
-        <h1 className="font-display text-headline-lg text-on-surface mb-1">{displayName}</h1>
+        <h1 className="font-display text-2xl text-on-surface mb-1">{displayName}</h1>
         <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/30 text-primary font-mono text-label-caps">
           {isMember ? 'PRO COLLECTOR' : 'COLLECTOR'}
         </div>

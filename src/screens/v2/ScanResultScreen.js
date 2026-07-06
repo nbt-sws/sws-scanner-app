@@ -73,7 +73,7 @@ export default function ScanResultScreen({ user, getToken, image, result, onBack
         >
           <Icon name="arrow_back" size={20} />
         </button>
-        <span className="font-display text-headline-lg-mobile text-primary">SwibScan</span>
+        <span className="font-display text-xl text-primary">SwibScan</span>
         <button className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface">
           <Icon name="more_vert" size={20} />
         </button>
@@ -90,7 +90,7 @@ export default function ScanResultScreen({ user, getToken, image, result, onBack
           <div className="font-mono text-label-caps text-on-surface-variant tracking-widest mb-1">
             AI SUGGESTED GRADE
           </div>
-          <div className="font-display text-headline-lg text-on-surface">{suggestedGrade}</div>
+          <div className="font-display text-2xl text-on-surface">{suggestedGrade}</div>
         </div>
         <div className="w-14 h-14 rounded-full border-2 border-outline-variant flex items-center justify-center">
           <span className="font-mono text-body-md text-on-surface-variant">
@@ -104,7 +104,7 @@ export default function ScanResultScreen({ user, getToken, image, result, onBack
         <Chip active>{rarity}</Chip>
         <Chip>{language}</Chip>
       </div>
-      <h2 className="font-display text-headline-lg-mobile text-on-surface mb-1">{name}</h2>
+      <h2 className="font-display text-xl sm:text-2xl text-on-surface mb-1">{name}</h2>
       <div className="text-body-sm text-on-surface-variant mb-5">
         Code: {code} • Set: {setName}
       </div>
@@ -128,7 +128,7 @@ export default function ScanResultScreen({ user, getToken, image, result, onBack
                 }`}
               >
                 <div className="font-mono text-[10px] uppercase text-on-surface-variant mb-1">{key}</div>
-                <div className={`font-display text-body-md ${active ? 'text-primary' : 'text-on-surface'}`}>
+                <div className={`font-display text-lg ${active ? 'text-primary' : 'text-on-surface'}`}>
                   {pricesLoading ? '…' : fmtCurrency(value)}
                 </div>
               </div>
