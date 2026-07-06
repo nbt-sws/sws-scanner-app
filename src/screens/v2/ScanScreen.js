@@ -71,16 +71,6 @@ export default function ScanScreen({ user, onResult }) {
 
   return (
     <div className="flex flex-col min-h-full px-4 pt-16 pb-24">
-      {/* Header */}
-      <div className="mb-6">
-        <div className="font-mono text-label-caps text-on-surface-variant tracking-widest mb-1">
-          SCAN — SWIBScan v2.4
-        </div>
-        <h1 className="font-display text-headline-lg-mobile text-on-surface">
-          Align asset within frame
-        </h1>
-      </div>
-
       {/* Viewfinder */}
       <div className="relative aspect-[3/4] w-full max-w-md mx-auto rounded-3xl border border-primary/30 bg-surface-container-low overflow-hidden mb-6">
         <div className="absolute inset-0 flex items-center justify-center">
