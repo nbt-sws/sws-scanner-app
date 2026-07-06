@@ -22,7 +22,7 @@ export function BottomNav({ active, onChange }) {
               className={cn(
                 'flex flex-col items-center justify-center gap-1 rounded-2xl min-w-0 px-1 transition-colors',
                 isActive
-                  ? 'bg-surface-container-high text-primary'
+                  ? 'bg-surface-container-high text-primary neon-ring'
                   : 'text-on-surface-variant hover:text-on-surface'
               )}
             >

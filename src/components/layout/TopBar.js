@@ -8,7 +8,7 @@ export function TopBar({ onMenuClick }) {
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-midnight-rose flex items-center justify-center">
           <Icon name="layers" size={18} filled className="text-on-primary" />
         </div>
-        <span className="font-display font-bold text-xl text-primary tracking-tight">
+        <span className="font-display font-bold text-xl text-primary tracking-tight neon-text">
           SwibScan
         </span>
       </div>

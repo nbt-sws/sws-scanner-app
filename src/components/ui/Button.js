@@ -11,7 +11,7 @@ export function Button({
 }) {
   const variants = {
     primary:
-      'bg-midnight-rose text-white border-transparent shadow-[0_6px_20px_-8px_rgba(224,94,126,0.55)]',
+      'bg-midnight-rose text-white border-transparent neon-glow hover:neon-glow-strong',
     secondary:
       'bg-transparent text-on-surface border border-outline-variant hover:bg-surface-container',
     surface:

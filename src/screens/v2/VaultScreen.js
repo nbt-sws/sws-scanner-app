@@ -70,7 +70,7 @@ export default function VaultScreen({ user, getToken }) {
       </div>
 
       {/* Value hero */}
-      <div className="relative p-5 rounded-3xl bg-gradient-to-br from-primary to-midnight-rose text-on-primary mb-4 overflow-hidden">
+      <div className="relative p-5 rounded-3xl bg-gradient-to-br from-primary to-midnight-rose text-on-primary mb-4 overflow-hidden neon-glow-strong">
         <div className="absolute top-0 right-0 p-4 opacity-20">
           <Icon name="account_balance_wallet" size={64} />
         </div>
