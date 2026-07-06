@@ -2,12 +2,11 @@
 
 import React, { useState } from 'react';
 import { Icon } from '../components/Icon';
+import { BrandIcon } from '../components/BrandIcon';
 import { Button } from '../components/ui/Button';
 import {
   signInEmail,
   signUpEmail,
-  signInWithGoogle,
-  signInWithApple,
   isBypassCredentials,
 } from '../auth';
 import { firebaseEnabled } from '../firebase';
@@ -40,18 +39,7 @@ export default function SignIn({ onSignedIn }) {
     }
   };
 
-  const oauth = (fn) => async () => {
-    setError(null);
-    setBusy(true);
-    try {
-      await fn();
-      onSignedIn?.();
-    } catch (err) {
-      setError(err.message || 'OAuth failed');
-    } finally {
-      setBusy(false);
-    }
-  };
+
 
   const inputClass =
     'w-full rounded-xl bg-surface-container border border-outline-variant/50 px-4 py-3.5 text-body-md text-on-surface placeholder:text-on-surface-variant outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-colors';
@@ -137,31 +125,28 @@ export default function SignIn({ onSignedIn }) {
           <Button
             variant="surface"
             size="lg"
-            onClick={oauth(signInWithGoogle)}
-            disabled={busy || !firebaseEnabled}
-            className="gap-3"
+            disabled
+            className="gap-3 opacity-60 cursor-not-allowed"
           >
-            <Icon name="google" size={20} />
-            Continue with Google
+            <BrandIcon brand="google" size={20} />
+            Continue with Google · soon
           </Button>
           <Button
             variant="surface"
             size="lg"
-            onClick={oauth(signInWithApple)}
-            disabled={busy || !firebaseEnabled}
-            className="gap-3"
+            disabled
+            className="gap-3 opacity-60 cursor-not-allowed"
           >
-            <Icon name="apple" size={20} />
-            Continue with Apple
+            <BrandIcon brand="apple" size={20} />
+            Continue with Apple · soon
           </Button>
           <Button
             variant="ghost"
             size="lg"
-            onClick={() => setError('LINE sign-in is coming soon — use Google, Apple, or email for now.')}
-            disabled={busy}
-            className="gap-3"
+            disabled
+            className="gap-3 opacity-60 cursor-not-allowed"
           >
-            <Icon name="chat" size={20} />
+            <BrandIcon brand="line" size={20} />
             Continue with LINE · soon
           </Button>
         </div>
