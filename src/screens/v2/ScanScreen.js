@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Icon } from '../../components/Icon';
 import { Button } from '../../components/ui/Button';
 import { useScan } from '../../hooks/useScan';
-import CameraCapture from '../../CameraCapture';
+import CameraCapture from './CameraCapture';
 
 const LANGUAGES = ['EN', 'JP', 'CN'];
 

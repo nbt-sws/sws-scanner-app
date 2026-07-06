@@ -15,7 +15,7 @@ import ActivityScreen from './screens/v2/ActivityScreen';
 import ProfileScreen from './screens/v2/ProfileScreen';
 
 export default function App() {
-  const { user, loading } = useAuth();
+  const { user, loading, getIdToken } = useAuth();
   const [tab, setTab] = useState('scan');
   const [scanView, setScanView] = useState(null); // { image, result }
 
@@ -44,6 +44,7 @@ export default function App() {
       return (
         <ScanResultScreen
           user={user}
+          getToken={getIdToken}
           image={scanView.image}
           result={scanView.result}
           onBack={() => setScanView(null)}
@@ -64,7 +65,7 @@ export default function App() {
           />
         );
       case 'vault':
-        return <VaultScreen user={user} currency={currency} />;
+        return <VaultScreen user={user} getToken={getIdToken} currency={currency} />;
       case 'activity':
         return <ActivityScreen />;
       case 'profile':

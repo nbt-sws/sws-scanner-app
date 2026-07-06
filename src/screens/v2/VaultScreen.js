@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Icon } from '../../components/Icon';
 import { Card, CardContent } from '../../components/ui/Card';
 import { Chip } from '../../components/ui/Chip';
-import { useVault } from '../../vault';
+import { useVault } from '../../hooks/useVault';
 
 const CATEGORIES = ['All Assets', 'Pokémon', 'One Piece', 'Yu-Gi-Oh!'];
 
@@ -38,8 +38,8 @@ function computeTotals(items) {
   };
 }
 
-export default function VaultScreen({ user }) {
-  const { items, loading } = useVault(user?.uid);
+export default function VaultScreen({ user, getToken }) {
+  const { items, loading } = useVault(user, getToken);
   const [category, setCategory] = useState('All Assets');
 
   const filtered = useMemo(() => {

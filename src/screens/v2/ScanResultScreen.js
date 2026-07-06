@@ -3,7 +3,7 @@ import { Icon } from '../../components/Icon';
 import { Button } from '../../components/ui/Button';
 import { Chip } from '../../components/ui/Chip';
 import { usePrices } from '../../hooks/usePrices';
-import { useAddVaultItem } from '../../hooks/useVaultMutations';
+import { useAddVaultItem } from '../../hooks/useAddVaultItem';
 
 function fmtCurrency(value, currency = 'USD') {
   if (value == null || Number.isNaN(value)) return '—';
@@ -14,7 +14,7 @@ function fmtCurrency(value, currency = 'USD') {
   }).format(value);
 }
 
-export default function ScanResultScreen({ user, image, result, onBack, onAdded }) {
+export default function ScanResultScreen({ user, getToken, image, result, onBack, onAdded }) {
   const card = result?.cards?.[0] || result || {};
   const code = card.code || 'UNKNOWN';
   const rarity = card.rarity || '—';
@@ -37,7 +37,7 @@ export default function ScanResultScreen({ user, image, result, onBack, onAdded 
 
   const { data: prices, isLoading: pricesLoading } = usePrices(code, rarity);
 
-  const addVault = useAddVaultItem({
+  const addVault = useAddVaultItem(user, getToken, {
     onSuccess: () => {
       setSaved(true);
       onAdded?.();
@@ -48,7 +48,6 @@ export default function ScanResultScreen({ user, image, result, onBack, onAdded 
     if (!user?.uid) return;
     const variant = variants[selectedVariant] || {};
     addVault.mutate({
-      uid: user.uid,
       item: {
         code,
         nameEn: name,
