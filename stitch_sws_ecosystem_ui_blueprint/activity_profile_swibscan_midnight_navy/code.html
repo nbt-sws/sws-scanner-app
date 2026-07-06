@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SwibScan Activity &amp; Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "primary-fixed-dim": "#ffb2bf",
+                "surface-container-highest": "#33343e",
+                "on-surface-variant": "#ddbfc3",
+                "on-secondary-fixed": "#161b2a",
+                "secondary-container": "#414657",
+                "primary-container": "#e86585",
+                "primary": "#ffb2bf",
+                "secondary": "#c1c6da",
+                "surface-container-low": "#191b24",
+                "on-surface": "#e2e1ee",
+                "outline-variant": "#564145",
+                "on-primary-container": "#5a0022",
+                "background": "#0a0c14",
+                "error": "#ffb4ab",
+                "surface-bright": "#373942",
+                "on-primary-fixed-variant": "#88193d",
+                "inverse-on-surface": "#2e3039",
+                "on-tertiary": "#293042",
+                "tertiary": "#bfc6dd",
+                "on-primary-fixed": "#3f0016",
+                "tertiary-container": "#8990a6",
+                "surface": "#11131b",
+                "on-primary": "#660028",
+                "surface-tint": "#ffb2bf",
+                "surface-variant": "#33343e",
+                "on-tertiary-container": "#22293b",
+                "on-error-container": "#ffdad6",
+                "on-tertiary-fixed-variant": "#3f4659",
+                "surface-container": "#1d1f28",
+                "secondary-fixed": "#dee2f7",
+                "inverse-surface": "#e2e1ee",
+                "surface-container-high": "#282a32",
+                "on-background": "#e2e1ee",
+                "primary-fixed": "#ffd9de",
+                "secondary-fixed-dim": "#c1c6da",
+                "surface-container-lowest": "#0c0e16",
+                "tertiary-fixed": "#dbe2fa",
+                "error-container": "#93000a",
+                "inverse-primary": "#a83354",
+                "on-secondary-fixed-variant": "#414657",
+                "surface-dim": "#11131b",
+                "on-secondary": "#2b3040",
+                "on-error": "#690005",
+                "on-tertiary-fixed": "#141b2c",
+                "on-secondary-container": "#b0b4c8",
+                "outline": "#a58a8e",
+                "tertiary-fixed-dim": "#bfc6dd"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "margin-mobile": "16px",
+                "gutter": "24px",
+                "base-unit": "4px",
+                "margin-desktop": "48px",
+                "container-max": "1280px"
+        },
+        "fontFamily": {
+                "body-md": [
+                        "Inter"
+                ],
+                "label-caps": [
+                        "JetBrains Mono"
+                ],
+                "body-sm": [
+                        "Inter"
+                ],
+                "headline-xl": [
+                        "Manrope"
+                ],
+                "headline-lg-mobile": [
+                        "Manrope"
+                ],
+                "headline-lg": [
+                        "Manrope"
+                ]
+        },
+        "fontSize": {
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "label-caps": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "body-sm": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-xl": [
+                        "48px",
+                        {
+                                "lineHeight": "56px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "28px",
+                        {
+                                "lineHeight": "36px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "600"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        .glass-card {
+            background-color: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glow-accent {
+            box-shadow: 0 0 15px rgba(255, 178, 191, 0.2);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col font-body-md pb-24 md:pb-0">
+<!-- TopAppBar (Mobile & Desktop) -->
+<header class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 docked full-width top-0 z-50 border-b border-white/5 bg-background/80 backdrop-blur-md sticky">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="A macro shot of a sleek, dark metallic surface with abstract glowing teal circuitry patterns, representing a secure digital avatar placeholder in a high-tech obsidian environment, soft diffuse lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCd4wVfp3tOf0o5KmxbdsR17kKaonbzD6Vh3mWkUkqAmyr3iAlM3sPwspD7f51xXMQGopKT-6qUaB4hDmMY9KdR3PCdtbyv5LSE2ZMOUlasvc-z3jo7DJNYUmlVzkTB2nnc-xZPyrwc7Fg1lsugljhzkKJS0DpqJdAjloGw60vHcMg9wpbl4PU_Tw1kzeMAxuzV_Axxv9SwyUO7YKt-13ggoL_5hTChvQgLRgvd_UQPLoiEOp563MWw-9oM8NSY9cxqpUgYUKvPZsMz"/>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary-fixed-dim tracking-tighter">SwibScan</h1>
+</div>
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity tap-highlight-none flex items-center justify-center p-2 rounded-full hover:bg-white/5">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</header>
+<main class="flex-1 max-w-7xl mx-auto w-full px-margin-mobile md:px-margin-desktop py-gutter grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Profile Section (Left Column Desktop / Top Mobile) -->
+<section class="md:col-span-4 flex flex-col gap-2">
+<div class="glass-card rounded-xl p-gutter flex flex-col items-center text-center relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-b from-primary-fixed-dim/5 to-transparent pointer-events-none"></div>
+<div class="w-24 h-24 rounded-full overflow-hidden border-2 border-primary p-1 mb-2 relative">
+<img alt="User Profile" class="w-full h-full object-cover rounded-full" data-alt="A portrait of a sophisticated collector in a dimly lit, futuristic gallery setting, dramatic teal rim lighting against a dark slate background, high definition, sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAPZyAvIpkgcjKJ8cRehhDkj62a7gsqQnonHzpKYFo3oIZ4R3cAg02_CFlw_OCjhfbDO3gyInlQZSUEMbOIaGMYourB_ZC29ZegdeJqQi22U8wbxJyId5U032vUCM3cwZ5eSJDQmL3vO7gZol8k63NoIWIzLGdV6EQ_ldAjo3o430vIWcodkas8Jn870u6VIfy2hoCWzcMHRLzu4hsDeRy0bEu2Bpta-tik1VXJqVTxc7p4gsp8GAr1AD7L3V2aDjxZyEblrPxXdQZ"/>
+<div class="absolute bottom-0 right-0 w-6 h-6 bg-secondary rounded-full border-2 border-background flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px] text-on-secondary" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Alex Mercer</h2>
+<div class="flex items-center gap-2 mt-2">
+<span class="bg-primary/20 text-primary font-label-caps text-label-caps px-3 py-1 rounded-full border border-primary/30 uppercase tracking-widest">PRO COLLECTOR</span>
+</div>
+</div>
+<div class="glass-card rounded-xl p-gutter">
+<div class="flex justify-between items-center mb-2">
+<h3 class="font-label-caps text-label-caps text-secondary uppercase tracking-widest">KYC STATUS</h3>
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md text-on-surface-variant">Verified to Tier 3</span>
+<button class="bg-primary text-on-primary font-label-caps text-label-caps uppercase tracking-widest px-4 py-2 rounded-lg glow-accent hover:opacity-90 transition-opacity">UPDATE</button>
+</div>
+</div>
+<nav class="glass-card rounded-xl overflow-hidden flex flex-col">
+<a class="flex items-center justify-between p-4 border-b border-white/5 hover:bg-white/5 transition-colors" href="#">
+<div class="flex items-center gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-body-md text-body-md">Currency Preferences</span>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-4 border-b border-white/5 hover:bg-white/5 transition-colors" href="#">
+<div class="flex items-center gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined">card_membership</span>
+<span class="font-body-md text-body-md">Membership</span>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-4 border-b border-white/5 hover:bg-white/5 transition-colors" href="#">
+<div class="flex items-center gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-body-md text-body-md">Notification Settings</span>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-4 hover:bg-white/5 transition-colors group" href="#">
+<div class="flex items-center gap-3 text-error">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-body-md text-body-md">Sign Out</span>
+</div>
+</a>
+</nav>
+</section>
+<!-- Activity Section (Right Column Desktop / Bottom Mobile) -->
+<section class="md:col-span-8 flex flex-col gap-2">
+<div class="flex items-center justify-between mb-2 mt-4 md:mt-0">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Recent Activity</h2>
+<button class="text-primary font-label-caps text-label-caps uppercase tracking-widest hover:underline">VIEW ALL</button>
+</div>
+<div class="flex flex-col gap-2">
+<!-- Activity Item 1 -->
+<div class="glass-card rounded-xl p-4 flex items-start gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">document_scanner</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-body-md text-body-md text-on-surface font-medium">Scan Successful</h4>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-[12px]">2m ago</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Asset ID #8849 authenticated via optical fingerprinting.</p>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="glass-card rounded-xl p-4 flex items-start gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary/10 border border-secondary/30 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary">trending_up</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-body-md text-body-md text-on-surface font-medium">Value Alert</h4>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-[12px]">1h ago</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Vault valuation increased by 4.2% in the last 24h.</p>
+</div>
+</div>
+<!-- Activity Item 3 -->
+<div class="glass-card rounded-xl p-4 flex items-start gap-4 opacity-75">
+<div class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant">inventory_2</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-body-md text-body-md text-on-surface font-medium">Asset Deposited</h4>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-[12px]">Yesterday</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Vintage Chronograph added to Vault Alpha.</p>
+</div>
+</div>
+<!-- Activity Item 4 -->
+<div class="glass-card rounded-xl p-4 flex items-start gap-4 opacity-75">
+<div class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant">security</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-body-md text-body-md text-on-surface font-medium">Security Update</h4>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-[12px]">Oct 12</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">New device authorized for account access.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden bg-white/5 dark:bg-surface-container/5 backdrop-blur-xl fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 rounded-t-xl border-t border-white/10 shadow-[0_-8px_20px_rgba(255,178,191,0.15)]">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined text-2xl mb-1">document_scanner</span>
+<span class="font-label-caps text-label-caps uppercase tracking-widest">Scan</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined text-2xl mb-1">inventory_2</span>
+<span class="font-label-caps text-label-caps uppercase tracking-widest">Vault</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined text-2xl mb-1">analytics</span>
+<span class="font-label-caps text-label-caps uppercase tracking-widest">Activity</span>
+</a>
+<!-- Active Tab -->
+<a class="flex flex-col items-center justify-center text-primary bg-primary/20 rounded-xl px-4 py-1.5 shadow-[0_0_15px_rgba(255,178,191,0.2)] scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined text-2xl mb-1" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-caps text-label-caps uppercase tracking-widest">Profile</span>
+</a>
+</nav>
+</body></html>

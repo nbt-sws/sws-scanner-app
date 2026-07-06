@@ -98,9 +98,17 @@ export function useAuth() {
       };
     }
 
-    update(mockUser);
+    if (mockUser) {
+      update(mockUser);
+      return () => {
+        if (typeof window !== 'undefined') {
+          window.removeEventListener('sws-mock-auth-change', handleMock);
+        }
+      };
+    }
+
     const unsub = onAuthStateChanged(auth, (u) => {
-      update(mockUser || u);
+      update(u);
     });
 
     return () => {

@@ -4,6 +4,7 @@
 // Components consume via the useVault() hook which subscribes to live updates.
 
 import { apiUrl } from './api';
+import { compressImageSafe } from './lib/image';
 import { useEffect, useState } from 'react';
 import {
   collection,
@@ -42,6 +43,25 @@ const OFFLINE_VAULT = [
 ];
 
 // ------------------------------------------------------------
+// Local-storage offline fallback when Firebase is not configured.
+const VAULT_STORAGE_KEY = 'sws_vault';
+
+function readLocalVault() {
+  if (typeof window === 'undefined') return OFFLINE_VAULT;
+  try {
+    const raw = window.localStorage.getItem(VAULT_STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch { /* ignore */ }
+  return OFFLINE_VAULT;
+}
+
+function writeLocalVault(items) {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(VAULT_STORAGE_KEY, JSON.stringify(items));
+  } catch { /* ignore */ }
+}
+
 // Subscribe to a user's vault. Returns { items, loading, error }.
 // ------------------------------------------------------------
 export function useVault(uid) {
@@ -51,9 +71,18 @@ export function useVault(uid) {
 
   useEffect(() => {
     if (!firebaseEnabled || !db) {
-      setItems(OFFLINE_VAULT);
+      const vault = readLocalVault();
+      setItems(vault);
       setLoading(false);
-      return undefined;
+
+      const onStorage = () => setItems(readLocalVault());
+      const onChange = () => setItems(readLocalVault());
+      window.addEventListener('storage', onStorage);
+      window.addEventListener('sws-vault-change', onChange);
+      return () => {
+        window.removeEventListener('storage', onStorage);
+        window.removeEventListener('sws-vault-change', onChange);
+      };
     }
     if (!uid) {
       setItems([]);
@@ -103,17 +132,36 @@ function fromDoc(id, data) {
 // Verbs
 // ------------------------------------------------------------
 export async function addVaultItem(uid, item) {
-  if (!firebaseEnabled || !db) {
-    throw new Error('Firebase not configured');
-  }
-  if (!uid) throw new Error('uid required');
   const payload = {
     ...item,
-    userId: uid,
-    createdAt: serverTimestamp(),
+    userId: uid || item.userId || 'offline',
+    createdAt: new Date().toISOString(),
     purchaseDate: item.purchaseDate || new Date().toISOString().slice(0, 10),
   };
-  const ref = await addDoc(collection(db, VAULT), payload);
+
+  // Keep stored images small — Firestore has a ~1 MiB string limit and
+  // localStorage also benefits from smaller payloads.
+  if (payload.image) {
+    payload.image = await compressImageSafe(payload.image, {
+      maxWidth: 800,
+      maxHeight: 800,
+      quality: 0.7,
+    });
+  }
+
+  if (!firebaseEnabled || !db) {
+    const vault = readLocalVault();
+    const next = [{ id: `local-${Date.now()}`, ...payload }, ...vault];
+    writeLocalVault(next);
+    window.dispatchEvent(new Event('sws-vault-change'));
+    return next[0].id;
+  }
+
+  if (!uid) throw new Error('uid required');
+  const ref = await addDoc(collection(db, VAULT), {
+    ...payload,
+    createdAt: serverTimestamp(),
+  });
   return ref.id;
 }
 

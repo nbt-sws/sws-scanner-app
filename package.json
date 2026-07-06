@@ -3,7 +3,7 @@
   "version": "13.0.0",
   "private": true,
   "proxy": "http://localhost:8088",
-  "description": "SwibSwap / BoBoa Scanner v13 \u2014 TCG card scanner with cache, photo storage, and quality scoring",
+  "description": "SwibSwap / BoBoa Scanner v13 — TCG card scanner with cache, photo storage, and quality scoring",
   "author": "I1NOV",
   "scripts": {
     "start": "react-scripts start",
@@ -21,12 +21,16 @@
     "@capacitor/filesystem": "^6.0.1",
     "@capacitor/ios": "^6.1.2",
     "@capacitor/preferences": "^6.0.2",
+    "@tanstack/react-query": "^5.101.2",
+    "@tanstack/react-query-devtools": "^5.101.2",
+    "clsx": "^2.1.1",
     "firebase": "^10.13.0",
     "firebase-admin": "^12.4.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
-    "sharp": "^0.33.5"
+    "sharp": "^0.33.5",
+    "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
     "@capacitor/cli": "^6.1.2"
@@ -47,7 +51,7 @@
     "node": ">=18.0.0"
   },
   "optionalDependencies": {
-    "@img/sharp-linux-x64": "0.33.5",
-    "@img/sharp-libvips-linux-x64": "1.0.4"
+    "@img/sharp-libvips-linux-x64": "1.0.4",
+    "@img/sharp-linux-x64": "0.33.5"
   }
 }
