@@ -3,7 +3,7 @@ import { cn } from '../../lib/utils';
 
 export function Screen({ children, className }) {
   return (
-    <div className={cn('min-h-screen bg-background text-on-background flex flex-col relative overflow-hidden', className)}>
+    <div className={cn('h-full min-h-full bg-background text-on-background', className)}>
       {children}
     </div>
   );

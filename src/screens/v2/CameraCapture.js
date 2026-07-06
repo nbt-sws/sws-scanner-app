@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Icon } from '../../components/Icon';
-import { Button } from '../../components/ui/Button';
+
 
 function stopStream(stream) {
   stream?.getTracks().forEach((t) => t.stop());
@@ -92,7 +92,7 @@ export default function CameraCapture({ onCapture, onCancel }) {
         >
           <Icon name="arrow_back" size={20} />
         </button>
-        <div className="font-display text-body-md text-on-surface">Scan Card</div>
+        <div className="font-body-md text-body-md text-on-surface">Scan Card</div>
         <div className="w-10" />
       </div>
 
@@ -120,7 +120,7 @@ export default function CameraCapture({ onCapture, onCancel }) {
 
         {/* Hints */}
         <div className="absolute top-24 left-0 right-0 text-center">
-          <div className="font-mono text-label-caps text-on-surface/80 tracking-[0.2em] bg-background/40 inline-block px-3 py-1 rounded-full">
+          <div className="font-label-caps text-label-caps text-on-surface/80 tracking-[0.2em] bg-background/40 inline-block px-3 py-1 rounded-full">
             ALIGN CARD WITHIN FRAME
           </div>
         </div>

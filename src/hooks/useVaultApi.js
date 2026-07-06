@@ -1,13 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getJson, postJson, patchJson, deleteJson } from '../api';
+import { useServiceUserId } from '../lib/userId';
 
 const VAULT_API_ENABLED = Boolean(
   process.env.REACT_APP_VAULT_API_URL || process.env.REACT_APP_USE_VAULT_API === 'true'
 );
 
-function headersFor(user, token) {
+function headersFor(serviceUserId, token) {
   const h = {};
-  if (user?.uid) h['X-User-ID'] = user.uid;
+  if (serviceUserId) h['X-User-ID'] = serviceUserId;
   if (token) h.Authorization = `Bearer ${token}`;
   return h;
 }
@@ -17,66 +18,71 @@ export function isVaultApiEnabled() {
 }
 
 export function useVaultItems(user, getToken, options = {}) {
+  const serviceUserId = useServiceUserId(user, getToken);
   return useQuery({
-    queryKey: ['vault', 'items', user?.uid],
+    queryKey: ['vault', 'items', serviceUserId],
     queryFn: async () => {
       const token = await getToken?.();
-      const data = await getJson('/vault/items?holderId=' + encodeURIComponent(user.uid), {
-        headers: headersFor(user, token),
-      });
+      const data = await getJson(
+        '/vault/items?holderId=' + encodeURIComponent(serviceUserId),
+        { headers: headersFor(serviceUserId, token) }
+      );
       return (data?.items || []).map(fromApiItem);
     },
-    enabled: VAULT_API_ENABLED && Boolean(user?.uid),
+    enabled: VAULT_API_ENABLED && Boolean(serviceUserId),
     ...options,
   });
 }
 
 export function useCreateVaultItem(user, getToken, options = {}) {
   const qc = useQueryClient();
+  const serviceUserId = useServiceUserId(user, getToken);
   return useMutation({
     mutationFn: async (item) => {
       const token = await getToken?.();
-      const payload = toApiItem(item);
+      const payload = toApiItem(item, serviceUserId);
       const data = await postJson('/vault/items', payload, {
-        headers: headersFor(user, token),
+        headers: headersFor(serviceUserId, token),
       });
       return fromApiItem(data);
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['vault', 'items', user?.uid] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['vault', 'items', serviceUserId] }),
     ...options,
   });
 }
 
 export function useUpdateVaultItem(user, getToken, options = {}) {
   const qc = useQueryClient();
+  const serviceUserId = useServiceUserId(user, getToken);
   return useMutation({
     mutationFn: async ({ id, patch }) => {
       const token = await getToken?.();
       const data = await patchJson(`/vault/items/${id}`, patch, {
-        headers: headersFor(user, token),
+        headers: headersFor(serviceUserId, token),
       });
       return fromApiItem(data);
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['vault', 'items', user?.uid] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['vault', 'items', serviceUserId] }),
     ...options,
   });
 }
 
 export function useDeleteVaultItem(user, getToken, options = {}) {
   const qc = useQueryClient();
+  const serviceUserId = useServiceUserId(user, getToken);
   return useMutation({
     mutationFn: async (id) => {
       const token = await getToken?.();
       return deleteJson(`/vault/items/${id}`, {
-        headers: headersFor(user, token),
+        headers: headersFor(serviceUserId, token),
       });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['vault', 'items', user?.uid] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['vault', 'items', serviceUserId] }),
     ...options,
   });
 }
 
-function toApiItem(item) {
+function toApiItem(item, holderId) {
   return {
     name: item.nameEn || item.name || item.code,
     sku: item.code,
@@ -84,6 +90,7 @@ function toApiItem(item) {
     subCategory: item.setName || item.set || '',
     itemFormat: item.condition || 'Raw',
     condition: item.condition || 'Raw',
+    holderId,
     description: JSON.stringify({
       language: item.language,
       rarity: item.rarity,

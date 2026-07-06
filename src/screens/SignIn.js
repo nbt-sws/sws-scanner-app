@@ -2,8 +2,6 @@
 
 import React, { useState } from 'react';
 import { Icon } from '../components/Icon';
-import { BrandIcon } from '../components/BrandIcon';
-import { Button } from '../components/ui/Button';
 import {
   signInEmail,
   signUpEmail,
@@ -39,38 +37,47 @@ export default function SignIn({ onSignedIn }) {
     }
   };
 
-
-
   const inputClass =
     'w-full rounded-xl bg-surface-container border border-outline-variant/50 px-4 py-3.5 text-body-md text-on-surface placeholder:text-on-surface-variant outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-colors';
 
   return (
-    <div className="min-h-screen bg-background text-on-background flex flex-col justify-center px-6 py-10">
-      <div className="w-full max-w-sm mx-auto">
+    <div className="h-screen overflow-y-auto flex items-center justify-center relative overflow-hidden bg-background text-on-background px-margin-mobile py-8">
+      {/* Ambient background orbs */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-primary/10 blur-[120px] animate-float" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-secondary/5 blur-[100px] animate-float" style={{ animationDelay: '2s' }} />
+      </div>
+
+      <div className="w-full max-w-md glass-panel rounded-2xl p-8 md:p-10 relative z-10 animate-scale-in">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-midnight-rose flex items-center justify-center mb-4 shadow-[0_8px_30px_-10px_rgba(255,178,191,0.4)]">
-            <Icon name="layers" size={32} filled className="text-on-primary" />
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-midnight-rose flex items-center justify-center mb-5 shadow-[0_8px_30px_-10px_rgba(255,178,191,0.4)]">
+            <Icon name="layers" size={36} filled className="text-on-primary" />
           </div>
-          <h1 className="font-display text-3xl text-on-surface mb-1">SwibScan</h1>
-          <p className="text-body-sm text-on-surface-variant">
+          <h1 className="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-xl md:text-headline-xl font-extrabold text-secondary mb-1 flex items-center justify-center gap-2">
+            SwibScan
+            <span className="px-1.5 py-0.5 rounded bg-secondary/20 text-secondary text-[10px] font-label-caps uppercase tracking-wider border border-secondary/30">
+              demo
+            </span>
+          </h1>
+          <p className="text-body-sm text-on-surface-variant text-center">
             {mode === 'signin' ? 'Welcome back, collector.' : 'Create your collector account.'}
           </p>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 rounded-xl bg-error-container/20 border border-error-container/40 text-error text-body-sm text-center">
+          <div className="mb-5 p-3 rounded-xl bg-error-container/20 border border-error-container/40 text-error text-body-sm text-center">
             {error}
           </div>
         )}
 
         {!firebaseEnabled && !isBypass && (
-          <div className="mb-4 p-3 rounded-xl bg-tertiary-container/20 border border-tertiary-container/40 text-tertiary text-body-sm text-center">
+          <div className="mb-5 p-3 rounded-xl bg-tertiary-container/20 border border-tertiary-container/40 text-tertiary text-body-sm text-center">
             Offline mode — Firebase keys not set. Sign-in is disabled.
           </div>
         )}
         {isBypass && (
-          <div className="mb-4 p-3 rounded-xl bg-primary/10 border border-primary/30 text-primary text-body-sm text-center">
+          <div className="mb-5 p-3 rounded-xl bg-primary/10 border border-primary/30 text-primary text-body-sm text-center">
             Bypass credentials detected — sign in without Firebase.
           </div>
         )}
@@ -105,53 +112,16 @@ export default function SignIn({ onSignedIn }) {
             required
             minLength={6}
           />
-          <Button
+          <button
             type="submit"
-            size="lg"
             disabled={busy || (!firebaseEnabled && !isBypass)}
-            className="mt-2"
+            className="w-full mt-2 py-4 rounded-xl btn-primary font-label-caps text-label-caps uppercase tracking-widest disabled:opacity-50"
           >
             {busy ? 'Working…' : mode === 'signin' ? 'Sign in' : 'Create account'}
-          </Button>
+          </button>
         </form>
 
-        <div className="flex items-center gap-3 mb-6">
-          <div className="flex-1 h-px bg-outline-variant/40" />
-          <span className="text-body-sm text-on-surface-variant">or</span>
-          <div className="flex-1 h-px bg-outline-variant/40" />
-        </div>
-
-        <div className="space-y-3 mb-6">
-          <Button
-            variant="surface"
-            size="lg"
-            disabled
-            className="gap-3 opacity-60 cursor-not-allowed"
-          >
-            <BrandIcon brand="google" size={20} />
-            Continue with Google · soon
-          </Button>
-          <Button
-            variant="surface"
-            size="lg"
-            disabled
-            className="gap-3 opacity-60 cursor-not-allowed"
-          >
-            <BrandIcon brand="apple" size={20} />
-            Continue with Apple · soon
-          </Button>
-          <Button
-            variant="ghost"
-            size="lg"
-            disabled
-            className="gap-3 opacity-60 cursor-not-allowed"
-          >
-            <BrandIcon brand="line" size={20} />
-            Continue with LINE · soon
-          </Button>
-        </div>
-
-        <p className="text-center text-body-sm text-on-surface-variant">
+        <p className="text-center text-body-sm text-on-surface-variant mt-6">
           {mode === 'signin' ? "Don't have an account?" : 'Already have an account?'}{' '}
           <button
             type="button"

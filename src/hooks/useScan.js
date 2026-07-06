@@ -4,7 +4,11 @@ import { postJson } from '../api';
 export function useScan(options = {}) {
   return useMutation({
     mutationFn: ({ imageBase64, language = 'EN', game = 'op' }) =>
-      postJson('/scan', { imageBase64, language, game }),
+      postJson('/scan', {
+        image: imageBase64,
+        tcg: game,
+        lang: language,
+      }),
     ...options,
   });
 }

@@ -25,6 +25,14 @@ export function apiUrl(path) {
   return `${API_BASE}${normalized}`;
 }
 
+export function proxyImageUrl(imageUrl) {
+  if (!imageUrl) return imageUrl;
+  // If already a data URL or a proxied URL, return as-is.
+  if (imageUrl.startsWith('data:')) return imageUrl;
+  if (imageUrl.startsWith('/proxy-image') || imageUrl.startsWith(`${API_BASE}/proxy-image`)) return imageUrl;
+  return apiUrl(`/proxy-image?url=${encodeURIComponent(imageUrl)}`);
+}
+
 export async function postJson(path, body, options = {}) {
   const response = await fetch(apiUrl(path), {
     method: 'POST',

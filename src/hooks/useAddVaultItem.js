@@ -1,9 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addVaultItem as addFirestoreVaultItem } from '../vault';
+import { addVaultItem } from '../vault';
 import { isVaultApiEnabled, useCreateVaultItem as useApiCreateVaultItem } from './useVaultApi';
+import { useServiceUserId } from '../lib/userId';
 
 export function useAddVaultItem(user, getToken, options = {}) {
   const qc = useQueryClient();
+  const serviceUserId = useServiceUserId(user, getToken);
   const apiCreate = useApiCreateVaultItem(user, getToken);
 
   return useMutation({
@@ -11,10 +13,10 @@ export function useAddVaultItem(user, getToken, options = {}) {
       if (isVaultApiEnabled()) {
         return apiCreate.mutateAsync(item);
       }
-      return addFirestoreVaultItem(user?.uid, item);
+      return addVaultItem(user?.uid, item);
     },
     onSuccess: (...args) => {
-      qc.invalidateQueries({ queryKey: ['vault', 'items', user?.uid] });
+      qc.invalidateQueries({ queryKey: ['vault', 'items', serviceUserId] });
       options.onSuccess?.(...args);
     },
     onError: options.onError,
