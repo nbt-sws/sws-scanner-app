@@ -1,9 +1,8 @@
-// /api/user.js — proxy to sws-svc-user-production.up.railway.app/v1
-// Forwards any /api/user/* request to the User microservice so the frontend
-// can call it without CORS issues.
+// /api/user.js — proxy to the User microservice
+// Forwards any /api/user/* request so the frontend can call it without CORS issues.
+// Set USER_API_URL in your environment (e.g. Vercel) to the base URL of the service.
 
-const DEFAULT_TARGET = 'https://sws-svc-user-production.up.railway.app/v1';
-const TARGET = (process.env.USER_API_URL || DEFAULT_TARGET).replace(/\/$/, '');
+const TARGET = process.env.USER_API_URL ? process.env.USER_API_URL.replace(/\/$/, '') : '';
 
 export const config = {
   api: {
@@ -20,6 +19,10 @@ function collectBody(req) {
 }
 
 export default async function handler(req, res) {
+  if (!TARGET) {
+    return res.status(500).json({ error: 'USER_API_URL environment variable is not set' });
+  }
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');

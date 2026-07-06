@@ -1,9 +1,8 @@
-// /api/vault.js — proxy to sws-svc-vault-production.up.railway.app/v1
-// Forwards any /api/vault/* request to the Vault microservice so the frontend
-// can call it without CORS issues.
+// /api/vault.js — proxy to the Vault microservice
+// Forwards any /api/vault/* request so the frontend can call it without CORS issues.
+// Set VAULT_API_URL in your environment (e.g. Vercel) to the base URL of the service.
 
-const DEFAULT_TARGET = 'https://sws-svc-vault-production.up.railway.app/v1';
-const TARGET = (process.env.VAULT_API_URL || DEFAULT_TARGET).replace(/\/$/, '');
+const TARGET = process.env.VAULT_API_URL ? process.env.VAULT_API_URL.replace(/\/$/, '') : '';
 
 export const config = {
   api: {
@@ -20,6 +19,10 @@ function collectBody(req) {
 }
 
 export default async function handler(req, res) {
+  if (!TARGET) {
+    return res.status(500).json({ error: 'VAULT_API_URL environment variable is not set' });
+  }
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');
